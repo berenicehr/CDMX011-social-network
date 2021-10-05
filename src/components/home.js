@@ -140,7 +140,7 @@ export const home = () => {
           homePage.querySelector('#post').value = docForEdit.data().post;
           editStatus = true;
           if (editStatus === true) {
-           // editPost(docForEdit, homePage.querySelector('#post').value);
+            // editPost(docForEdit, homePage.querySelector('#post').value);
             editPost(event.target.dataset.id, homePage.querySelector('#post').value);
             console.log('hola');
             // postDivPublish.querySelectorAll('.send').textContent = 'Actualizar';
