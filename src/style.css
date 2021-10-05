@@ -187,7 +187,7 @@ input {
     Height: 43px;
 }
 
-#backModal, .deleteBackModal{
+#backModal, .deleteBackModal, .editBackModal{
     visibility: hidden;
     top: 0px;
     display: flex;
@@ -199,7 +199,7 @@ input {
     align-items: center;
 }
 
-#modal, .deleteModal{
+#modal, .deleteModal, .editModal{
     border-radius: 10px;
     display: flex;
     background-color:#D3F5FF;;
@@ -221,7 +221,7 @@ input {
 }
 
 
-#post{
+#post, .editPost{
     background-color:#D3F5FF;;
     margin-top: 2%;
     margin-bottom: 2%;
@@ -248,9 +248,10 @@ input {
  display: flex;
  justify-content: flex-start;
  flex-direction: column;
- align-content: center;
+ align-items: flex-start;
+ /* align-content: center; */
  width:100%;
- align-items: center;
+/*  align-items: center; */
 }
 #posts{
     display:flex;
@@ -266,7 +267,7 @@ input {
     text-align: center;
     font-size: 18px;
 }
-#close{
+#close, .editClose{
     font-family: 'Fredoka one', sans-serif;
     color:#FF5A5C;
     font-size: 22px;
@@ -285,6 +286,11 @@ input {
     width: 80px;
     height: 30px
 }
+#date{
+    font-family: 'Montserrat';
+    font-weight: 600;
+    font-size: 11px
+}
 
 #edit{
     font-family: 'Fredoka One', cursive;
@@ -292,6 +298,8 @@ input {
     background: none;
    color:#D76524;
    justify-content: flex-start;
+   margin-right: 5px;
+  
 }
 
 #deletes{
@@ -307,7 +315,7 @@ input {
 #divButtons{
     display: flex;
     flex-wrap: nowrap;
-    justify-content: space-evenly;
+    
 }
 
 #userMail, .confirmText{
@@ -317,6 +325,10 @@ input {
     letter-spacing: .5px;
 }
 
-.btndeletes{
-    visibility: visible;
+#text{
+    visibility: hidden;
+}
+
+.like{
+ margin-right: 15px;
 }
