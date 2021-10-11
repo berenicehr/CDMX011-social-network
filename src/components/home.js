@@ -81,7 +81,7 @@ export const home = () => {
           <p id="date">${doc.data().date}</p>
           <p id="recentPost">${doc.data().post}</p>
           ${userEmail === doc.data().user
-    ? `<div id= "divButtons">
+    ? `<div id= "divButtons" class = "buttonsDiv">
           <img id="img"  class= "like" src="./imagenes/patitaGris.png">
           <button id= "edit" class= "btnEdit" data-id= ${comentId} >Editar</button>
           <div class="editBackModal">
@@ -99,7 +99,7 @@ export const home = () => {
           <button class="no" >No</button>
           </div>
           </div>`
-    : '<img id="img"  class= "like" src="./imagenes/patitaGris.png">'}
+    : '<p id ="counter" class = "counter"> 0 </p> <img id="img"  class= "like" src="./imagenes/patitaGris.png">'}
           </div>
           </div>`;
 
@@ -110,11 +110,19 @@ export const home = () => {
 
       colorPaw.forEach((postLike) => {
         postLike.addEventListener('click', (e) => {
+          e.target.matches();
+          const counterContainer = postDivPublish.querySelectorAll('.counter');
+          let startCount = '0';
           if (e.target.getAttribute('src') === './imagenes/patitaGris.png') {
             postLike.setAttribute('src', './imagenes/patitaColor.png');
+            startCount = '1';
+            console.log(startCount);
           } else {
             postLike.setAttribute('src', './imagenes/patitaGris.png');
+            startCount;
+            console.log(startCount);
           }
+          counterContainer.textContent = 'crayola';
         });
       });
 

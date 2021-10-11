@@ -72,3 +72,7 @@ export const storage = firebase.storage();
 export const storageRef = (postImg, img) => firebase.storage().ref(`/imgPost/${postImg.name}`).put(img).then(() => {
   console.log('Uploaded a blob or file!');
 });
+
+export const updateLike = (id, like) => db.collection('posts').doc(id).update({ like: firebase.firestore.FieldValue.arrayUnion(like) });
+
+export const dislike = (id, like) => db.collection('posts').doc(id).update({ like: firebase.firestore.FieldValue.arrayRemove(like) });
