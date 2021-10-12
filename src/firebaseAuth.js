@@ -1,4 +1,3 @@
-/* eslint-disable no-return-assign */
 const firebaseConfig = {
   apiKey: 'AIzaSyDaVL9xrLkXNtmtT3zogQtjb_kmOGJWmj0',
   authDomain: 'petfriends-fac02.firebaseapp.com',
@@ -52,27 +51,33 @@ export const logOut = (onNavigate) => firebase.auth().signOut()
 // firestore
 export const db = firebase.firestore();
 
-export const postInFirestore = (post, user, date) => db.collection('posts').add({
-  post, user, date,
+export const postInFirestore = (post, user, date, like) => db.collection('posts').add({
+  post, user, date, like,
 });
 
 export const updatePost = (callback) => db.collection('posts').onSnapshot(callback);
 
 export const deletePost = (id) => db.collection('posts').doc(id).delete();
 
-export const getTaskForEdit = (id) => db.collection('posts').doc(id).get();
-
-export const printPostFromFirestore = () => db.collection('posts').get();
+export const getIdFromCollection = (id) => db.collection('posts').doc(id).get();
 
 export const editPost = (id, post) => db.collection('posts').doc(id).update({ post });
 
 // storage
 export const storage = firebase.storage();
 
-export const storageRef = (postImg, img) => firebase.storage().ref(`/imgPost/${postImg.name}`).put(img).then(() => {
-  console.log('Uploaded a blob or file!');
-});
+export const storageRef = (postImg, img) => firebase.storage().ref(`/imgPost/${postImg.name}`)
+  .put(img).then(() => {
+    console.log('Uploaded a blob or file!');
+  });
 
-export const updateLike = (id, like) => db.collection('posts').doc(id).update({ like: firebase.firestore.FieldValue.arrayUnion(like) });
+export const likesCounter = (idFromPost, idFromUser) => db.collection('posts').doc(idFromPost)
+  .update({ idFromUser });
 
-export const dislike = (id, like) => db.collection('posts').doc(id).update({ like: firebase.firestore.FieldValue.arrayRemove(like) });
+// export const updateLikes= (likesUser) => firebase.firestore.FieldValue.arrayUnion(likesUser),
+
+export const updateLike = (id, like) => db.collection('posts').doc(id)
+  .update({ like: firebase.firestore.FieldValue.arrayUnion(like) });
+
+export const dislike = (id, like) => db.collection('posts').doc(id)
+  .update({ like: firebase.firestore.FieldValue.arrayRemove(like) });

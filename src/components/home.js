@@ -2,9 +2,9 @@
 import { onNavigate } from '../main.js';
 import { allFunctions } from '../lib/validFunc.js';
 import {
-  logOut, getUser, postInFirestore, updatePost, deletePost, stateCheck,
-  getTaskForEdit, editPost, storageRef,
-} from '../firebaseAuth.js';
+  logOut, getUser, postInFirestore, updatePost, deletePost, stateCheck, updateLike,
+  getIdFromCollection, editPost, storageRef, dislike,
+} from '../firebaseAuth';
 
 export const home = () => {
   let userEmail = getUser();
@@ -52,23 +52,24 @@ export const home = () => {
   homePage.querySelector('#close').addEventListener('click', () => {
     modal.style.visibility = 'hidden';
   });
-
+  const likeUser = [];
   // Botón para publicar el post
   homePage.querySelector('#share').addEventListener('click', () => {
     modal.style.visibility = 'hidden';
-    // Sección de imagen
-    const imgPost = homePage.querySelector('#addImg').files[0];
-    storageRef(imgPost, imgPost.name);
-
     //  sección de comentario
+
     const postPublish = homePage.querySelector('#post').value;
     const date = new Date();
     const postDate = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()} a las ${date.getHours()}:${date.getMinutes()}`;
     if (allFunctions.validPost(postPublish) === false) {
       alert('No has publicado un post aún');
     } else {
-      postInFirestore(postPublish, userEmail, postDate);
+      postInFirestore(postPublish, userEmail, postDate, likeUser);
     }
+
+    // Sección de imagen
+    const imgPost = homePage.querySelector('#addImg').files[0];
+    storageRef(imgPost, imgPost.name);
   });
 
   // Imprime los post ya existentes en pantalla
@@ -76,31 +77,34 @@ export const home = () => {
     postDivPublish.innerHTML = '';
     snapshot.forEach((doc) => {
       const comentId = doc.id;
+      const idUserFromLike = getUser().uid;
       const htmlPostsPublished = `<div id= "recentPostDiv" class= "completePost">
           <p id="userMail" class="userMail" >${doc.data().user}:</p>
           <p id="date">${doc.data().date}</p>
           <p id="recentPost">${doc.data().post}</p>
           ${userEmail === doc.data().user
-    ? `<div id= "divButtons" class = "buttonsDiv">
-          <img id="img"  class= "like" src="./imagenes/patitaGris.png">
+    ? `<div id= "divButtons">
+          <img id="img"  class= "like" src= "./imagenes/patitaGris.png" : data-idpost= ${comentId} data-id= ${idUserFromLike} >
+          <p id="paragCounter" class="paragCounter">${doc.data().like.length}<p>
           <button id= "edit" class= "btnEdit" data-id= ${comentId} >Editar</button>
-          <div class="editBackModal">
-          <div class="editModal">
-          <h3 class="editClose">x</h3>
-          <textarea class="editPost"></textarea>
-          <button id="share" class="save">Guardar</button>
-          </div>
-          </div>
-       <button id= "deletes" class="btndeletes" data-id= ${comentId} > Eliminar</button> 
+            <div class="editBackModal">
+               <div class="editModal">
+                  <h3 class="editClose">x</h3>
+                  <textarea class="editPost"></textarea>
+                  <button id="share" class="save">Guardar</button>
+               </div>
+            </div>
+          <button id= "deletes" class="btndeletes" data-id= ${comentId} > Eliminar</button> 
           <div class="deleteBackModal">
-          <div class="deleteModal" >
-          <h2 class= "confirmText">¿Estás segur@ que deseas eliminar este post? </h2>
-          <button class="si">Si</button>
-          <button class="no" >No</button>
-          </div>
+            <div class="deleteModal" >
+              <h2 class= "confirmText">¿Estás segur@ que deseas eliminar este post? </h2>
+              <button class="si">Si</button>
+              <button class="no" >No</button>
+             </div>
           </div>`
-    : '<p id ="counter" class = "counter"> 0 </p> <img id="img"  class= "like" src="./imagenes/patitaGris.png">'}
-          </div>
+    : `<img id="img"  data-idpost= ${comentId}  data-id= ${idUserFromLike} class= "like" src="./imagenes/patitaColor.png">
+    <p id="paragCounter" class="paragCounter">${doc.data().like.length}<p>`}
+            </div>
           </div>`;
 
       postDivPublish.innerHTML += htmlPostsPublished;
@@ -109,20 +113,25 @@ export const home = () => {
       const colorPaw = postDivPublish.querySelectorAll('.like');
 
       colorPaw.forEach((postLike) => {
-        postLike.addEventListener('click', (e) => {
-          e.target.matches();
-          const counterContainer = postDivPublish.querySelectorAll('.counter');
-          let startCount = '0';
+        postLike.addEventListener('click', async (e) => {
+          const likeId = await getIdFromCollection(e.target.dataset.idpost);
+
           if (e.target.getAttribute('src') === './imagenes/patitaGris.png') {
             postLike.setAttribute('src', './imagenes/patitaColor.png');
-            startCount = '1';
-            console.log(startCount);
           } else {
             postLike.setAttribute('src', './imagenes/patitaGris.png');
-            startCount;
-            console.log(startCount);
           }
-          counterContainer.textContent = 'crayola';
+
+          const arrayLike = likeId.data();
+          const idPost = e.target.dataset.idpost;
+          console.log(e.target.dataset.id);
+          console.log(likeId.data().like);
+
+          if (!arrayLike.like.includes(e.target.dataset.id)) {
+            updateLike(idPost, e.target.dataset.id);
+          } else {
+            dislike(idPost, e.target.dataset.id);
+          }
         });
       });
 
@@ -152,7 +161,7 @@ export const home = () => {
       btnEdit.forEach((edtPost) => {
         edtPost.addEventListener('click', async (event) => {
           postEditModal.style.visibility = 'visible';
-          const docForEdit = await getTaskForEdit(event.target.dataset.id);
+          const docForEdit = await getIdFromCollection(event.target.dataset.id);
           editedPost.value = docForEdit.data().post;
           // console.log(docForEdit.data());
           console.log(docForEdit.id);
