@@ -3,12 +3,11 @@ import { onNavigate } from '../main.js';
 import { allFunctions } from '../lib/validFunc.js';
 import {
   logOut, getUser, postInFirestore, updatePost, deletePost, stateCheck, updateLike,
-  getIdFromCollection, editPost, storageRef, dislike,
+  getIdFromCollection, editPost, dislike,
 } from '../firebaseAuth.js';
 
 export const home = () => {
-  let userEmail = getUser();
-  userEmail !== null ? userEmail = userEmail.email : userEmail = '';
+  const userEmail = getUser().email;
 
   const homePage = document.createElement('div');
 
@@ -52,11 +51,11 @@ export const home = () => {
   homePage.querySelector('#close').addEventListener('click', () => {
     modal.style.visibility = 'hidden';
   });
-  const likeUser = [];
   // Botón para publicar el post
   homePage.querySelector('#share').addEventListener('click', () => {
     modal.style.visibility = 'hidden';
     //  sección de comentario
+    const likeUser = [];
 
     const postPublish = homePage.querySelector('#post').value;
     const date = new Date();
@@ -68,8 +67,8 @@ export const home = () => {
     }
 
     // Sección de imagen
-    const imgPost = homePage.querySelector('#addImg').files[0];
-    storageRef(imgPost, imgPost.name);
+   /*  const imgPost = homePage.querySelector('#addImg').files[0];
+    storageRef(imgPost, imgPost.name); */
   });
 
   // Imprime los post ya existentes en pantalla

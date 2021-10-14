@@ -50,10 +50,7 @@ export const register = () => {
       printEmail = saveEmail;
     }
 
-    if (validPasswordFunc === false) {
-    // eslint-disable-next-line max-len
-    //  registerPage.querySelector('#invalidPassword').innerHTML = 'Las contraseñas no coinciden o tienen menos de 6 caracteres';
-    } else {
+    if (validPasswordFunc !== false) {
       printPassword = savedPassword;
     }
     authUser(printEmail, printPassword)
