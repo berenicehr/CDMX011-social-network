@@ -67,7 +67,7 @@ export const home = () => {
     }
 
     // Sección de imagen
-   /*  const imgPost = homePage.querySelector('#addImg').files[0];
+    /*  const imgPost = homePage.querySelector('#addImg').files[0];
     storageRef(imgPost, imgPost.name); */
   });
 
